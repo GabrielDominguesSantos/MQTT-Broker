@@ -1,5 +1,5 @@
 import init from 'react_native_mqtt';
-import { AsyncStorage } from '@react-native-async-storage/async-storage';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 // Inicializa a biblioteca com suporte a armazenamento local
 init({
 size: 10000,
@@ -17,7 +17,7 @@ export default class MQTTService {
     connect(config, onMessage, onConnect, onFailure) {
         const { host, port, path, user, pass, clientId } = config;
 
-        this.client = new Paho. MQTT.Client(host, port, path, clientId);
+        this.client = new global.Paho.MQTT.Client(host, Number(port), path, clientId);
 
         this.client.onMessageArrived = (message) => {
             onMessage(message.destinationName, message.payloadString);

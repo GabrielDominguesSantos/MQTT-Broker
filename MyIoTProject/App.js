@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { env } from 'expo-env';
 import { StyleSheet, View, Text } from 'react-native';
 import MQTTService from './src/services/mqttService';
 import StatusModal from './src/components/StatusModal';
 import LightControl from './src/components/LightControl';
 import Gauges from './src/components/Gauges';
 
-const matt = new MQTTService();
+const mqtt = new MQTTService();
 
 export default function App() {
   const [isConnected, setIsConnected]= useState(false);
@@ -15,11 +14,11 @@ export default function App() {
   const [temp, setTemp] = useState(0);
   const [hum, setHum] = useState(0);
   const mqttConfig = {
-  host: env.MQTT_HOST,
-  port: parseInt(env.MQTT_PORT),
-  path: env.MQTT_PATH,
-  user: env.MQTT_USER,
-  pass: env.MQTT_PASS,
+  host: process.env.EXPO_PUBLIC_MQTT_HOST,
+  port: parseInt(process.env.EXPO_PUBLIC_MQTT_PORT),
+  path: process.env.EXPO_PUBLIC_MQTT_PATH,
+  user: process.env.EXPO_PUBLIC_MQTT_USER,
+  pass: process.env.EXPO_PUBLIC_MQTT_PASS,
   clientId: 'RN_App_' + Math.random(),
   };
   useEffect(() => {
@@ -48,7 +47,7 @@ export default function App() {
     );
   };
 
-  const togglelight = () => {
+  const toggleLight = () => {
     const newState = isLighton? "0": "1";
     mqtt.publish('casa/luz', newState);
   };
