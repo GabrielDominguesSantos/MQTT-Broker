@@ -11,18 +11,32 @@ sync: {},
 
 export default class MQTTService {
     constructor() {
-    this.client = null;
+        this.client = null;
+        this.isConnected = false;
     }
 
     connect(config, onMessage, onConnect, onFailure) {
-        const { host, port, path, user, pass, clientId } = config;
+        const { host, port, user, pass, clientId } = config;
 
-        this.client = new global.Paho.MQTT.Client(host, Number(port), path, clientId);
+        if (!host || !port) {
+            console.error("MQTT Error: Host ou Port indefinidos!");
+            if (onFailure) onFailure({ errorMessage: "Host ou Port não configurados" });
+            return;
+        }
+
+        this.client = new global.Paho.MQTT.Client(host, Number(port), clientId);
 
         this.client.onMessageArrived = (message) => {
             onMessage(message.destinationName, message.payloadString);
         };
 
+        this.client.onConnectionLost = (responseObject) => {
+            this.isConnected = false;
+            if (responseObject.errorCode !== 0) {
+                console.log("Conexão perdida:", responseObject.errorMessage);
+            }
+        };
+        
         const options = {
             userName: user,
             password: pass,

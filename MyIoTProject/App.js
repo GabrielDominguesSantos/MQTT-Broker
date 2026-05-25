@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { StyleSheet, View, Text } from 'react-native';
 import MQTTService from './src/services/mqttService';
 import StatusModal from './src/components/StatusModal';
@@ -10,13 +10,13 @@ const mqtt = new MQTTService();
 export default function App() {
   const [isConnected, setIsConnected]= useState(false);
   const [showError, setShowError] = useState(false);
-  const [isLighton, setIsLighton] = useState(false);
+  const [isLightOn, setIsLightOn] = useState(false);
   const [temp, setTemp] = useState(0);
   const [hum, setHum] = useState(0);
+  const onMessageRef = useRef();
   const mqttConfig = {
   host: process.env.EXPO_PUBLIC_MQTT_HOST,
   port: parseInt(process.env.EXPO_PUBLIC_MQTT_PORT),
-  path: process.env.EXPO_PUBLIC_MQTT_PATH,
   user: process.env.EXPO_PUBLIC_MQTT_USER,
   pass: process.env.EXPO_PUBLIC_MQTT_PASS,
   clientId: 'RN_App_' + Math.random(),
@@ -48,7 +48,7 @@ export default function App() {
   };
 
   const toggleLight = () => {
-    const newState = isLighton? "0": "1";
+    const newState = isLightOn? "0": "1";
     mqtt.publish('casa/luz', newState);
   };
 
@@ -56,7 +56,7 @@ export default function App() {
     <View style={styles.container}>
       <Text style={styles.header}>Smart Home IoT</Text>
 
-      <LightControl isLightOn={isLighton} onToggle={toggleLight} />
+      <LightControl isLightOn={isLightOn} onToggle={toggleLight} />
 
       <Gauges temp={temp} hum={hum} />
 
