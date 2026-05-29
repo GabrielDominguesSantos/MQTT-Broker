@@ -1,0 +1,12 @@
+CREATE DATABASE IF NOT EXISTS smarthome_db;
+USE smarthome_db;
+
+CREATE TABLE IF NOT EXISTS historico_iot (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    topico VARCHAR(50) NOT NULL,
+    valor VARCHAR(50) NOT NULL,
+    data_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+
+Esse é o modelo de criação de banco de dados que funcionará com esse projeto, você deve iniciar o SQL localmente na sua máquina e executar esse comando 
